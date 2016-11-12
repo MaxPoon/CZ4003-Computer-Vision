@@ -237,7 +237,7 @@ The output image is similar to triclops-id.jpg. But the quality is not very good
 ##3.4 OPTIONAL
 ###You will need to implement the algorithm in the CVPR 2006 paper entiled “Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene Categories”. You will need to use the benchmark Caltech-101 dataset and compare the classification results of Spatial Pyramid Matching (SPM) and the bag-of-words (BoW) method as in Table 2 of the paper by following the experimental setting in Section 5.2 of the paper.
 
-Refering to some open source codes for SPM [1] [2], I implement the algorithm in the paper in python.
+Refering to some open source codes for SPM [1] [2], I implemented the algorithm in the paper in python.
 
 ###Result
 At first, I implemented the algorithm with four categories (Faces, laptop, soccer_ball and starfish) of images from Caltech-101 dataset. And I select 30 training images and 30 testing images for each category. The result is:
@@ -254,7 +254,7 @@ We can see that the classification rates are very close to the experiment result
 Categories".
 
 ###Key functions of the source codes
-[Click here](https://github.com/MaxPoon/Image-Recognition) to open the codes repository.
+The	codes repository is on my github: https://github.com/MaxPoon/CZ4003-Computer-Vision/tree/master/Lab2/SPM_image_recognition
 
 ####Main script:
 
