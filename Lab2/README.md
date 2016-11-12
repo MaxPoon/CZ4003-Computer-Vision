@@ -428,5 +428,6 @@ Categories".
 	        print "SVM (" +kernelType+"): " +str(accuracy)+ " (" +str(int(correct))+ "/" +str(len(testLabels))+ ")"
 	        
 ##Reference
-[1] PG_BOW_DEMO - Image Classification using Bag of Words and Spatial Pyramid BoW (https://github.com/lipiji/PG_BOW_DEMO)
-[2] Image-Recognition - Recognize images using Spatial Pyramid Matching & Earth Mover's Distance (https://github.com/wihoho/Image-Recognition)
+[[1] PG_BOW_DEMO - Image Classification using Bag of Words and Spatial Pyramid BoW](https://github.com/lipiji/PG_BOW_DEMO) 
+
+[[2] Image-Recognition - Recognize images using Spatial Pyramid Matching & Earth Mover's Distance](https://github.com/wihoho/Image-Recognition)
