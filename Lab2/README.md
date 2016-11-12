@@ -257,175 +257,177 @@ Categories".
 [Click here](https://github.com/MaxPoon/Image-Recognition) to open the codes repository.
 
 ####Main script:
+```python
+def main():
 
-	def main():
-	
-	    # 1) build histograms
-	    level = 2
-	    buildHistogram("testing", level)
-	    buildHistogram("training", level)
-	
-	    # 2) classify
-	    print " "
-	    classification.SVM_Classify("Data/trainingHistogramLevel"+str(level)+".pkl", "Data/traininglabels.pkl", "Data/testingHistogramLevel"+str(level)+".pkl", "Data/testinglabels.pkl", "linear")
-	
-	if __name__ == "__main__":
-	
-	    main()
+    # 1) build histograms
+    level = 2
+    buildHistogram("testing", level)
+    buildHistogram("training", level)
 
+    # 2) classify
+    print " "
+    classification.SVM_Classify("Data/trainingHistogramLevel"+str(level)+".pkl", "Data/traininglabels.pkl", "Data/testingHistogramLevel"+str(level)+".pkl", "Data/testinglabels.pkl", "linear")
+
+if __name__ == "__main__":
+
+    main()
+```
 ####Build histogram:
+```python
+def buildHistogram(path, level):
 
-	def buildHistogram(path, level):
-	
-	    # Read in vocabulary & data
-	    voc = utils.loadDataFromFile("Data/voc.pkl")
-	    trainData = utils.readImages("images/"+path)
-	
-	    # Transform each feature into histogram
-	    featureHistogram = []
-	    labels = []
-	
-	    index = 0
-	    for oneImage in trainData:
-	
-	        featureHistogram.append(voc.buildHistogramForEachImageAtDifferentLevels(oneImage, level))
-	        labels.append(oneImage.label)
-	
-	        index += 1
-	
-	    utils.writeDataToFile("Data/"+path+"HistogramLevel" +str(level)+ ".pkl", featureHistogram)
-	    utils.writeDataToFile("Data/"+path+"labels.pkl", labels)
+    # Read in vocabulary & data
+    voc = utils.loadDataFromFile("Data/voc.pkl")
+    trainData = utils.readImages("images/"+path)
 
--
+    # Transform each feature into histogram
+    featureHistogram = []
+    labels = []
 
-    def buildHistogramForEachImageAtDifferentLevels(self, descriptorsOfImage, level):
-        width = descriptorsOfImage.width
-        height = descriptorsOfImage.height
-        widthStep = int(width / 4)
-        heightStep = int(height / 4)
+    index = 0
+    for oneImage in trainData:
 
-        descriptors = descriptorsOfImage.descriptors
+        featureHistogram.append(voc.buildHistogramForEachImageAtDifferentLevels(oneImage, level))
+        labels.append(oneImage.label)
 
-	        # level 2, a list with size = 16 to store histograms at different location
-	        histogramOfLevelTwo = np.zeros((64, self.size))
-	        for descriptor in descriptors:
-	            x = descriptor.x
-	            y = descriptor.y
-	            boundaryIndex = int(x / widthStep)  + int(y / heightStep) *4
-	
-	            feature = descriptor.descriptor
-	            shape = feature.shape[0]
-	            feature = feature.reshape(1, shape)
-	
-	            codes, distance = vq(feature, self.vocabulary)
-	            histogramOfLevelTwo[boundaryIndex][codes[0]] += 1
-	
-	        # level 1, based on histograms generated on level two
-	        histogramOfLevelOne = np.zeros((4, self.size))
-	        histogramOfLevelOne[0] = histogramOfLevelTwo[0] + histogramOfLevelTwo[1] + histogramOfLevelTwo[4] + histogramOfLevelTwo[5]
-	        histogramOfLevelOne[1] = histogramOfLevelTwo[2] + histogramOfLevelTwo[3] + histogramOfLevelTwo[6] + histogramOfLevelTwo[7]
-	        histogramOfLevelOne[2] = histogramOfLevelTwo[8] + histogramOfLevelTwo[9] + histogramOfLevelTwo[12] + histogramOfLevelTwo[13]
-	        histogramOfLevelOne[3] = histogramOfLevelTwo[10] + histogramOfLevelTwo[11] + histogramOfLevelTwo[14] + histogramOfLevelTwo[15]
-	
-	        # level 0
-	        histogramOfLevelZero = histogramOfLevelOne[0] + histogramOfLevelOne[1] + histogramOfLevelOne[2] + histogramOfLevelOne[3]
-	
-	
-	        if level == 0:
-	            return histogramOfLevelZero
-	
-	        elif level == 1:
-	            tempZero = histogramOfLevelZero.flatten() * 0.5
-	            tempOne = histogramOfLevelOne.flatten() * 0.5
-	            result = np.concatenate((tempZero, tempOne))
-	            return result
-	
-	        elif level == 2:
-	
-	            tempZero = histogramOfLevelZero.flatten() * 0.25
-	            tempOne = histogramOfLevelOne.flatten() * 0.25
-	            tempTwo = histogramOfLevelTwo.flatten() * 0.5
-	            result = np.concatenate((tempZero, tempOne, tempTwo))
-	            return result
-	
-	        else:
-	            return None
+        index += 1
+
+    utils.writeDataToFile("Data/"+path+"HistogramLevel" +str(level)+ ".pkl", featureHistogram)
+    utils.writeDataToFile("Data/"+path+"labels.pkl", labels)
+    
+def buildHistogramForEachImageAtDifferentLevels(self, descriptorsOfImage, level):
+    width = descriptorsOfImage.width
+    height = descriptorsOfImage.height
+    widthStep = int(width / 4)
+    heightStep = int(height / 4)
+
+    descriptors = descriptorsOfImage.descriptors
+
+        # level 2, a list with size = 16 to store histograms at different location
+        histogramOfLevelTwo = np.zeros((64, self.size))
+        for descriptor in descriptors:
+            x = descriptor.x
+            y = descriptor.y
+            boundaryIndex = int(x / widthStep)  + int(y / heightStep) *4
+
+            feature = descriptor.descriptor
+            shape = feature.shape[0]
+            feature = feature.reshape(1, shape)
+
+            codes, distance = vq(feature, self.vocabulary)
+            histogramOfLevelTwo[boundaryIndex][codes[0]] += 1
+
+        # level 1, based on histograms generated on level two
+        histogramOfLevelOne = np.zeros((4, self.size))
+        histogramOfLevelOne[0] = histogramOfLevelTwo[0] + histogramOfLevelTwo[1] + histogramOfLevelTwo[4] + histogramOfLevelTwo[5]
+        histogramOfLevelOne[1] = histogramOfLevelTwo[2] + histogramOfLevelTwo[3] + histogramOfLevelTwo[6] + histogramOfLevelTwo[7]
+        histogramOfLevelOne[2] = histogramOfLevelTwo[8] + histogramOfLevelTwo[9] + histogramOfLevelTwo[12] + histogramOfLevelTwo[13]
+        histogramOfLevelOne[3] = histogramOfLevelTwo[10] + histogramOfLevelTwo[11] + histogramOfLevelTwo[14] + histogramOfLevelTwo[15]
+
+        # level 0
+        histogramOfLevelZero = histogramOfLevelOne[0] + histogramOfLevelOne[1] + histogramOfLevelOne[2] + histogramOfLevelOne[3]
+
+
+        if level == 0:
+            return histogramOfLevelZero
+
+        elif level == 1:
+            tempZero = histogramOfLevelZero.flatten() * 0.5
+            tempOne = histogramOfLevelOne.flatten() * 0.5
+            result = np.concatenate((tempZero, tempOne))
+            return result
+
+        elif level == 2:
+
+            tempZero = histogramOfLevelZero.flatten() * 0.25
+            tempOne = histogramOfLevelOne.flatten() * 0.25
+            tempTwo = histogramOfLevelTwo.flatten() * 0.5
+            result = np.concatenate((tempZero, tempOne, tempTwo))
+            return result
+
+        else:
+            return None
+```
 
 ####Sift:
+```python
+def process_image_dsift(imagename,resultname,size=20,steps=10,force_orientation=False,resize=None):
 
-	def process_image_dsift(imagename,resultname,size=20,steps=10,force_orientation=False,resize=None):
-	
-	    im = Image.open(imagename).convert('L')
-	    if resize!=None:
-	        im = im.resize(resize)
-	    m,n = im.size
-	
-	    if imagename[-3:] != 'pgm':
-	        #create a pgm file
-	        im.save('tmp.pgm')
-	        imagename = 'tmp.pgm'
-	
-	    # create frames and save to temporary file
-	    scale = size/3.0
-	    x,y = np.meshgrid(range(steps,m,steps),range(steps,n,steps))
-	    xx,yy = x.flatten(),y.flatten()
-	    frame = np.array([xx,yy,scale * np.ones(xx.shape[0]), np.zeros(xx.shape[0])])
-	    np.savetxt('tmp.frame',frame.T,fmt='%03.3f')
-	
-	    if force_orientation:
-	        cmmd = str("sift "+imagename+" --output="+resultname+
-	                    " --read-frames=tmp.frame --orientations")
-	    else:
-	        cmmd = str("sift "+imagename+" --output="+resultname+
-	                    " --read-frames=tmp.frame")
-	
-	    os.environ['PATH'] += os.pathsep +'/home/maxpoon/Image-Recognition/vlfeat-0.9.20/bin/glnxa64'
-	    os.system(cmmd)
+    im = Image.open(imagename).convert('L')
+    if resize!=None:
+        im = im.resize(resize)
+    m,n = im.size
+
+    if imagename[-3:] != 'pgm':
+        #create a pgm file
+        im.save('tmp.pgm')
+        imagename = 'tmp.pgm'
+
+    # create frames and save to temporary file
+    scale = size/3.0
+    x,y = np.meshgrid(range(steps,m,steps),range(steps,n,steps))
+    xx,yy = x.flatten(),y.flatten()
+    frame = np.array([xx,yy,scale * np.ones(xx.shape[0]), np.zeros(xx.shape[0])])
+    np.savetxt('tmp.frame',frame.T,fmt='%03.3f')
+
+    if force_orientation:
+        cmmd = str("sift "+imagename+" --output="+resultname+
+                    " --read-frames=tmp.frame --orientations")
+    else:
+        cmmd = str("sift "+imagename+" --output="+resultname+
+                    " --read-frames=tmp.frame")
+
+    os.environ['PATH'] += os.pathsep +'/home/maxpoon/Image-Recognition/vlfeat-0.9.20/bin/glnxa64'
+    os.system(cmmd)
+```
 
 ####Histogram intersection:
+```python
+def histogramIntersection(M, N):
+    m = M.shape[0]
+    n = N.shape[0]
 
-	def histogramIntersection(M, N):
-	    m = M.shape[0]
-	    n = N.shape[0]
-	
-	    result = np.zeros((m,n))
-	    for i in range(m):
-	        for j in range(n):
-	            temp = np.sum(np.minimum(M[i], N[j]))
-	            result[i][j] = temp
-	
-	    return result
+    result = np.zeros((m,n))
+    for i in range(m):
+        for j in range(n):
+            temp = np.sum(np.minimum(M[i], N[j]))
+            result[i][j] = temp
+
+    return result
+```
 
 ####Classify:
+```python
+def SVM_Classify(trainDataPath, trainLabelPath, testDataPath, testLabelPath, kernelType):
+    trainData = np.array(utils.loadDataFromFile(trainDataPath))
+    trainLabels = utils.loadDataFromFile(trainLabelPath)
 
-	def SVM_Classify(trainDataPath, trainLabelPath, testDataPath, testLabelPath, kernelType):
-	    trainData = np.array(utils.loadDataFromFile(trainDataPath))
-	    trainLabels = utils.loadDataFromFile(trainLabelPath)
-	
-	    testData = np.array(utils.loadDataFromFile(testDataPath))
-	    testLabels = utils.loadDataFromFile(testLabelPath)
-	
-	
-	    if kernelType == "HI":
-	
-	        gramMatrix = histogramIntersection(trainData, trainData)
-	        clf = SVC(kernel='precomputed')
-	        clf.fit(gramMatrix, trainLabels)
-	
-	        predictMatrix = histogramIntersection(testData, trainData)
-	        SVMResults = clf.predict(predictMatrix)
-	        correct = sum(1.0 * (SVMResults == testLabels))
-	        accuracy = correct / len(testLabels)
-	        print "SVM (Histogram Intersection): " +str(accuracy)+ " (" +str(int(correct))+ "/" +str(len(testLabels))+ ")"
-	
-	    else:
-	        clf = SVC(kernel = kernelType)
-	        clf.fit(trainData, trainLabels)
-	        SVMResults = clf.predict(testData)
-	
-	        correct = sum(1.0 * (SVMResults == testLabels))
-	        accuracy = correct / len(testLabels)
-	        print "SVM (" +kernelType+"): " +str(accuracy)+ " (" +str(int(correct))+ "/" +str(len(testLabels))+ ")"
+    testData = np.array(utils.loadDataFromFile(testDataPath))
+    testLabels = utils.loadDataFromFile(testLabelPath)
+
+
+    if kernelType == "HI":
+
+        gramMatrix = histogramIntersection(trainData, trainData)
+        clf = SVC(kernel='precomputed')
+        clf.fit(gramMatrix, trainLabels)
+
+        predictMatrix = histogramIntersection(testData, trainData)
+        SVMResults = clf.predict(predictMatrix)
+        correct = sum(1.0 * (SVMResults == testLabels))
+        accuracy = correct / len(testLabels)
+        print "SVM (Histogram Intersection): " +str(accuracy)+ " (" +str(int(correct))+ "/" +str(len(testLabels))+ ")"
+
+    else:
+        clf = SVC(kernel = kernelType)
+        clf.fit(trainData, trainLabels)
+        SVMResults = clf.predict(testData)
+
+        correct = sum(1.0 * (SVMResults == testLabels))
+        accuracy = correct / len(testLabels)
+        print "SVM (" +kernelType+"): " +str(accuracy)+ " (" +str(int(correct))+ "/" +str(len(testLabels))+ ")"
+```
 	        
 ##Reference
 [[1] PG_BOW_DEMO - Image Classification using Bag of Words and Spatial Pyramid BoW](https://github.com/lipiji/PG_BOW_DEMO) 
