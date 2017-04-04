@@ -1,13 +1,13 @@
-#<center>Report</center>
-##3.1 Edge Detection
-###a) Download 'macritchie.jpg' from edveNTUre and convert the image to grayscale. Display the image.
+# <center>Report</center>
+## 3.1 Edge Detection
+### a) Download 'macritchie.jpg' from edveNTUre and convert the image to grayscale. Display the image.
 	P = imread('resources/maccropped.jpg');
 	P = rgb2gray(P);
 	imshow(P)
 
 ![](http://i.imgur.com/BgrROAs.jpg)
 
-###b) Create 3x3 horizontal and vertical Sobel masks and filter the image using conv2. Display the edge-filtered images. What happens to edges which are not strictly vertical nor horizontal, i.e. diagonal?
+### b) Create 3x3 horizontal and vertical Sobel masks and filter the image using conv2. Display the edge-filtered images. What happens to edges which are not strictly vertical nor horizontal, i.e. diagonal?
 	h1 = [-1 -2 -1; 0 0 0; 1 2 1]
 	h2 = [-1 0 1; -2 0 2; -1 0 1]
 	P2 = conv2(double(P),double(h1));
@@ -26,7 +26,7 @@
 
 The edges like diagonal disappear from the edge images.
 
-###c) Generate a combined edge image by squaring (i.e. .^2) the horizontal and vertical edge images and adding the squared images. Suggest a reason why a squaring operation is carried out.
+### c) Generate a combined edge image by squaring (i.e. .^2) the horizontal and vertical edge images and adding the squared images. Suggest a reason why a squaring operation is carried out.
 	P2 = conv2(double(P),double(h1));
 	P3 = conv2(double(P),double(h2));
 	P4 = P2.^2+P3.^2;
@@ -37,7 +37,7 @@ It is to calculate the magnitute of the gradient in its direction. That is why s
 
 ![](http://i.imgur.com/Y73ym3U.jpg)
 
-###d) Threshold the edge image E at value t
+### d) Threshold the edge image E at value t
 
 	P5 = P4>50;
 
@@ -51,12 +51,12 @@ It is to calculate the magnitute of the gradient in its direction. That is why s
 
 ![](http://i.imgur.com/LjUkPWh.jpg)
 
-###What are the advantages and disadvantages of using different thresholds?
+### What are the advantages and disadvantages of using different thresholds?
 Using a high thresholds, noise could be removed, but some edges are removed at the same time. Using a lower threshold would keep the edges but there would be more noise pixels.
 
-###e) Recompute the edge image using the more advanced Canny edge detection algorithm with tl=0.04, th=0.1, sigma=1.0.
+### e) Recompute the edge image using the more advanced Canny edge detection algorithm with tl=0.04, th=0.1, sigma=1.0.
 
-###(i) Try different values of sigma ranging from 1.0 to 5.0 and determine the effect on the edge images. What do you see and can you give an explanation for why this occurs? Discuss how different sigma are suitable for (a) noisy edgel removal, and (b) location accuracy of edgels.
+### (i) Try different values of sigma ranging from 1.0 to 5.0 and determine the effect on the edge images. What do you see and can you give an explanation for why this occurs? Discuss how different sigma are suitable for (a) noisy edgel removal, and (b) location accuracy of edgels.
 
 ![](http://i.imgur.com/uYuGQkd.jpg)
 
@@ -78,7 +78,7 @@ sigma=5.0
 
 With a larger sigma value, the Canny edge detection is able to remove the noise, but the location accuracy is lower.
 
-###(ii) Try raising and lowering the value of tl. What does this do? How does this relate to your knowledge of the Canny algorithm?
+### (ii) Try raising and lowering the value of tl. What does this do? How does this relate to your knowledge of the Canny algorithm?
 
 tl = 0.01, sigma = 3
 
@@ -98,12 +98,12 @@ tl = 0.08, sigma = 3
 
 When tl has a lower value, more pixel will be set to one. So among the above images, the first one has more complete edges and more noise.
 
-##3.2 Line Finding using Hough Transform
-###a) Reuse the edge image computed via the Canny algorithm with sigma=1.0.
+## 3.2 Line Finding using Hough Transform
+### a) Reuse the edge image computed via the Canny algorithm with sigma=1.0.
 
 ![](http://i.imgur.com/lPCSb26.jpg)
 
-###b) As there is no function available to compute the Hough transform in MATLAB, we will use the Radon transform, which for binary images is equivalent to the Hough transform. Read the help manual on Radon transform, and explain why the transforms are equivalent in this case. When are they different?
+### b) As there is no function available to compute the Hough transform in MATLAB, we will use the Radon transform, which for binary images is equivalent to the Hough transform. Read the help manual on Radon transform, and explain why the transforms are equivalent in this case. When are they different?
 	help Radon
 
     radon Radon transform.
@@ -123,11 +123,11 @@ When tl has a lower value, more pixel will be set to one. So among the above ima
 
 Using Radon transform, the points on the same straight line will be mapped to the same point in the theta domain, so the point in theta domain will be higher. So Radon transform is equivalent to Hough transform. These two method may be different when the image is not in binary format (i.e. gray-level image or RGB image), because the intensity will be taken into consideration in Radon transform.
 
-###Display H as an image. The Hough transform will have horizontal bins of angles corresponding to 0-179 degrees, and vertical bins of radial distance in pixels as captured in xp. The transform is taken with respect to a Cartesian coordinate system where the origin is located at the centre of the image, and the x-axis pointing right and the y-axis pointing up.
+### Display H as an image. The Hough transform will have horizontal bins of angles corresponding to 0-179 degrees, and vertical bins of radial distance in pixels as captured in xp. The transform is taken with respect to a Cartesian coordinate system where the origin is located at the centre of the image, and the x-axis pointing right and the y-axis pointing up.
 
 ![](http://i.imgur.com/Ew2RgVL.jpg)
 
-###c) Find the location of the maximum pixel intensity in the Hough image in the form of [theta, radius]. These are the parameters corresponding to the line in the image with the strongest edge support.
+### c) Find the location of the maximum pixel intensity in the Hough image in the form of [theta, radius]. These are the parameters corresponding to the line in the image with the strongest edge support.
 
 	H1 = H>=143.5;
 	imshow(H1)
@@ -137,10 +137,10 @@ Using Radon transform, the points on the same straight line will be mapped to th
 	[radius, theta]=find(H1>0);
 	radius = xp(radius)
 
-###d) Derive the equations to convert the [theta, radius] line representation to the normal line equation form Ax + By = C in image coordinates. Show that A and B can be obtained via
-###>> [A, B] = pol2cart(theta*pi/180, radius);
-###>> B = -B;
-###B needs to be negated because the y-axis is pointing downwards for image coordinates.
+### d) Derive the equations to convert the [theta, radius] line representation to the normal line equation form Ax + By = C in image coordinates. Show that A and B can be obtained via
+### >> [A, B] = pol2cart(theta*pi/180, radius);
+### >> B = -B;
+### B needs to be negated because the y-axis is pointing downwards for image coordinates.
 
 We have: cos(theta * pi/180) * x + sin(theta * pi/180) * y = radius
 
@@ -157,7 +157,7 @@ When we call the function
 
 A = radius * cos(theta * pi/180), B = radius * sin(theta*pi/180), which are corresponding to cos(theta * pi/180) * x + sin(theta * pi/180) * y = radius. 
 
-###Find C. Reminder: the Hough transform is done with respect to an origin at the centre of the image, and you will need to convert back to image coordinates where the origin is in the top-left corner of the image.
+### Find C. Reminder: the Hough transform is done with respect to an origin at the centre of the image, and you will need to convert back to image coordinates where the origin is in the top-left corner of the image.
 
 C = radius^2 (in Hough transform coordinates)
 
@@ -167,16 +167,16 @@ A*x+B*y = radius^2 + 179A + 145B
 
 	C = radius^2 + 179*A+145*B
 
-###e) Based on the equation of the line Ax+By = C that you obtained, compute yl and yr values for corresponding xl = 0 and xr = width of image - 1.
+### e) Based on the equation of the line Ax+By = C that you obtained, compute yl and yr values for corresponding xl = 0 and xr = width of image - 1.
 
 	yl = (C-A*xl)/B
 	yr = (C-A*xr)/B
 
-###f) Display the original ‘macritchie.jpg’ image. Superimpose your estimated line by
+### f) Display the original ‘macritchie.jpg’ image. Superimpose your estimated line by
 
 	line([xl xr], [yl yr]);
 
-###Does the line match up with the edge of the running path? What are, if any, sources of errors? Can you suggest ways of improving the estimation?
+### Does the line match up with the edge of the running path? What are, if any, sources of errors? Can you suggest ways of improving the estimation?
 
 ![](http://i.imgur.com/THNRh7B.jpg)
 
@@ -186,8 +186,8 @@ It does not match up with any edge of the running path. One of the possible sour
 
 ![](http://i.imgur.com/1b1pcvf.jpg)
 
-##3.3 3D Stereo
-###a) Write the disparity map algorithm as a MATLAB function script which takes two arguments of left and right images, and 2 arguments specifying the template dimensions. It should return the disparity map. Try and minimize the use of for loops, instead relying on the vector / matrix processing functions.
+## 3.3 3D Stereo
+### a) Write the disparity map algorithm as a MATLAB function script which takes two arguments of left and right images, and 2 arguments specifying the template dimensions. It should return the disparity map. Try and minimize the use of for loops, instead relying on the vector / matrix processing functions.
 
 	function map = disparity_map(Pl, Pr)
 	[height, width] = size(Pl);
@@ -220,7 +220,7 @@ It does not match up with any edge of the running path. One of the possible sour
 	    end
 	end
 
-###c) Run your algorithm on the two images to obtain a disparity map D, and see the results via imshow(-D,[-15 15]);
+### c) Run your algorithm on the two images to obtain a disparity map D, and see the results via imshow(-D,[-15 15]);
 
 ![](http://i.imgur.com/USumZXf.jpg)
 
@@ -228,18 +228,18 @@ The output image is similar to 'corridor_disp.jpg'. And the quality of the dispa
 
 The quality of the image is good because there are not many large area having the same or similor colors, so that the SSD matching is working well for most of the region. 
 
-###d) Rerun your algorithm on the real images of 'triclops-i2l.jpg' and 'triclops-i2r.jpg'. Again you may refer to 'triclops-id.jpg' for expected quality. How does the image structure of the stereo images affect the accuracy of the estimated disparities?
+### d) Rerun your algorithm on the real images of 'triclops-i2l.jpg' and 'triclops-i2r.jpg'. Again you may refer to 'triclops-id.jpg' for expected quality. How does the image structure of the stereo images affect the accuracy of the estimated disparities?
 
 ![](http://i.imgur.com/A7dndX6.jpg)
 
 The output image is similar to triclops-id.jpg. But the quality is not very good compared to the output for corridor image. This is because there are a lot of large areas in the image having the same color. This adversely affects the performance of SSD matching.
 
-##3.4 OPTIONAL
-###You will need to implement the algorithm in the CVPR 2006 paper entiled “Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene Categories”. You will need to use the benchmark Caltech-101 dataset and compare the classification results of Spatial Pyramid Matching (SPM) and the bag-of-words (BoW) method as in Table 2 of the paper by following the experimental setting in Section 5.2 of the paper.
+## 3.4 OPTIONAL
+### You will need to implement the algorithm in the CVPR 2006 paper entiled “Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene Categories”. You will need to use the benchmark Caltech-101 dataset and compare the classification results of Spatial Pyramid Matching (SPM) and the bag-of-words (BoW) method as in Table 2 of the paper by following the experimental setting in Section 5.2 of the paper.
 
 Refering to some open source codes for SPM [1] [2], I implement the algorithm in the paper in python.
 
-###Result
+### Result
 At first, I implemented the algorithm with four categories (Faces, laptop, soccer_ball and starfish) of images from Caltech-101 dataset. And I select 30 training images and 30 testing images for each category. The result is:
 
 	level0 (BoW): 0.841666666667 (101/120)
@@ -253,10 +253,10 @@ We can see that two-level SPM outperforms the BoW approach. But both classificat
 We can see that the classification rates are very close to the experiment results reported in "Beyond Bags of Features: Spatial Pyramid Matching for Recognizing Natural Scene
 Categories".
 
-###Key functions of the source codes
+### Key functions of the source codes
 [Click here](https://github.com/MaxPoon/Image-Recognition) to open the codes repository.
 
-####Main script:
+#### Main script:
 ```python
 def main():
 
@@ -273,7 +273,7 @@ if __name__ == "__main__":
 
     main()
 ```
-####Build histogram:
+#### Build histogram:
 ```python
 def buildHistogram(path, level):
 
@@ -350,7 +350,7 @@ def buildHistogramForEachImageAtDifferentLevels(self, descriptorsOfImage, level)
             return None
 ```
 
-####Sift:
+#### Sift:
 ```python
 def process_image_dsift(imagename,resultname,size=20,steps=10,force_orientation=False,resize=None):
 
@@ -382,7 +382,7 @@ def process_image_dsift(imagename,resultname,size=20,steps=10,force_orientation=
     os.system(cmmd)
 ```
 
-####Histogram intersection:
+#### Histogram intersection:
 ```python
 def histogramIntersection(M, N):
     m = M.shape[0]
@@ -397,7 +397,7 @@ def histogramIntersection(M, N):
     return result
 ```
 
-####Classify:
+#### Classify:
 ```python
 def SVM_Classify(trainDataPath, trainLabelPath, testDataPath, testLabelPath, kernelType):
     trainData = np.array(utils.loadDataFromFile(trainDataPath))
@@ -429,7 +429,7 @@ def SVM_Classify(trainDataPath, trainLabelPath, testDataPath, testLabelPath, ker
         print "SVM (" +kernelType+"): " +str(accuracy)+ " (" +str(int(correct))+ "/" +str(len(testLabels))+ ")"
 ```
 	        
-##Reference
+## Reference
 [[1] PG_BOW_DEMO - Image Classification using Bag of Words and Spatial Pyramid BoW](https://github.com/lipiji/PG_BOW_DEMO) 
 
 [[2] Image-Recognition - Recognize images using Spatial Pyramid Matching & Earth Mover's Distance](https://github.com/wihoho/Image-Recognition)
